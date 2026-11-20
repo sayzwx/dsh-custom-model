@@ -27,7 +27,16 @@
 
 ![编辑器](docs/editor.png)
 
-### 2) 模型检验（`settings.models.provider-card` 席位）
+### 2) 自动补全能力值（一条命令填满官方输入框）
+
+官方页要你手填「上下文窗口 / 最大输出 token 数 / 推理等级（档位 + API 参数值）」。插件直接问端点要：
+
+- 每条提供商行上的 **自动补全**（总览头部还有 **全部自动补全**）
+- 只花 **1~2 次请求**：读厂商目录 `{origin}/api/v1/models` 拿到全部模型的上下文窗口与输出上限；再问一次端点的推理档位枚举
+- 把结果按官方字段写进配置 —— 回到官方卡片里，`上下文窗口`、`最大输出 token 数`、`推理等级` 的档位与 API 参数值都已经填好
+- 端点没有可读目录时，自动降级成逐个模型实测（宁可多花几次请求，也不写猜的数字）；目录里没有的字段一律不写
+
+### 3) 模型检验（`settings.models.provider-card` 席位）
 
 每张自定义提供商卡片里多一条「模型检验」，问端点三件事：
 
@@ -37,8 +46,11 @@
 | **真实上下文窗口**与输出上限 | 先读厂商目录 `{origin}/api/v1/models`（一次覆盖全部模型）；没有目录时用「超界 max_tokens」从 400 报文里读输出上限 |
 | 端点**真正接受**的推理档位 | 逐档实测 `reasoning_effort`；端点若在 400 里列出合法集合，一次请求就能拿到全集 |
 
+> 只想「把能力值补齐」而不关心存活状态时，用上一节的**自动补全**，它跳过逐个模型的存活请求。
+
 两种模式：**快速检验**（目录 + 存活，每模型 1 请求）与**完整检验**（再加输出上限兜底与逐档探测）。
-检验完点**写回配置**，把实测的 `contextWindow` / `maxTokens` / `reasoningEfforts` 写回该路由的模型清单 —— 之后在对话里选这些模型就能设推理等级。
+面板里默认勾选**检验后自动写入配置**：检验一结束就把实测的 `contextWindow` / `maxTokens` / `reasoningEfforts` 写回去，
+不用再点第二次；想只看不动配置时取消勾选即可（也可以手动点**写回配置**）。
 
 探测跑在 **host 半身**：模型端点没有 CORS 头，密钥也只该在 Node 侧读。进度 1s 轮询，可随时停止。
 
@@ -90,7 +102,7 @@ harness 升级后若这些接缝变动，插件会在启动日志里给出 `[cus
 ## 结构
 
 ```
-lib/host.js        # 9 条 HTTP 路由：state / provider.save / provider.remove / models.discover / probe.*
+lib/host.js        # 10 条 HTTP 路由：state / provider.save / provider.remove / provider.enrich / models.discover / probe.*
 lib/probe-core.js  # 探测引擎（取自 dsh-xingkong-theme v1.13.0，只改注释）
 lib/client.js      # 两个席位的 React UI（window.__ModuleLoader__ lazy-CJS factory，无构建步骤）
 cordis.patch.yml   # 把 host 半身 insert 进 profile 的配置树

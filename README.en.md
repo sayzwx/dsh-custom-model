@@ -24,6 +24,15 @@ The official page can add a custom model API, one card at a time. What it cannot
 
 ![Editor](docs/editor.png)
 
+### One-click capability fill
+
+The official page asks you to type the context window, max output tokens and reasoning levels (level + API parameter value) by hand. The plugin asks the endpoint instead:
+
+- **Auto-fill** on each provider row (and **Fill all** in the header)
+- Costs **1–2 requests**: read the vendor catalog at `{origin}/api/v1/models` for every model's context window and output cap, then ask once which reasoning levels the endpoint enumerates
+- Writes the results into the official fields, so the provider card then shows `Context window`, `Max output tokens` and `Reasoning levels` (level + API parameter value) already filled
+- Without a readable catalog it degrades to per-model probing rather than writing guesses; anything the catalog does not disclose is left untouched
+
 ### Model probe (`settings.models.provider-card` seat)
 
 Every custom provider card gains a probe panel that answers three questions the official page cannot:
@@ -35,7 +44,7 @@ Every custom provider card gains a probe panel that answers three questions the 
 | Reasoning levels the endpoint **accepts** | Probe each `reasoning_effort` level live; if the endpoint enumerates the legal set in a 400, one request is enough |
 
 Two modes: **quick** (catalog + liveness, one request per model) and **full** (adds the output-cap fallback and per-level probing).
-Afterwards, **write back** stores the measured `contextWindow` / `maxTokens` / `reasoningEfforts` into that route's model list — select a model in the chat and its reasoning level becomes available.
+**Write back automatically** is on by default: as soon as a probe finishes, the measured `contextWindow` / `maxTokens` / `reasoningEfforts` go into that route's model list. Untick it to look without touching the configuration, or press **Write back** manually.
 
 Probing runs in the **host half**: model endpoints send no CORS headers, and keys never reach the renderer. Progress is polled every second and can be cancelled.
 
@@ -83,7 +92,7 @@ If a future harness changes those seams, the plugin logs a `[custom-model]` warn
 ## Layout
 
 ```
-lib/host.js        # 9 routes: state / provider.save / provider.remove / models.discover / probe.*
+lib/host.js        # 10 routes: state / provider.save / provider.remove / provider.enrich / models.discover / probe.*
 lib/probe-core.js  # probe engine (taken from dsh-xingkong-theme v1.13.0, comments only)
 lib/client.js      # React UI for both seats (window.__ModuleLoader__ lazy-CJS factory, no build step)
 cordis.patch.yml   # inserts the host half into the profile tree
