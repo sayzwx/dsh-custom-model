@@ -1,53 +1,50 @@
 {
-  "name": "dsh-xingkong-theme",
-  "version": "1.13.0",
-  "description": "Nebula Core: a deep-space observatory theme for the DeepSeek Harness Web GUI — same-direction cross-dissolve wallpaper loops (never a reversing ping-pong) behind a fully clear, un-veiled conversation pane, white-ink-on-photograph typography with soft blurred shadows (never a glyph outline), Montserrat + Noto Sans SC on a real variable-weight axis, and a 74-token light/dark palette. v1.13 adds a built-in model probe service: see which configured models actually answer, plus their real context window.",
+  "name": "dsh-custom-model",
+  "version": "1.0.0",
+  "description": "Adds a custom-model console and a model probe to the DeepSeek Harness Models settings page: manage hand-declared llm-pi-ai providers in one list, ask an endpoint which models it serves, and probe which of them actually answer, their real context window, max output and the reasoning levels the endpoint accepts.",
   "license": "MIT",
   "author": "石岩",
   "type": "module",
-  "main": "bundle/host.js",
+  "main": "lib/host.js",
   "exports": {
-    ".": "./bundle/host.js",
-    "./client": "./bundle/client.js",
+    ".": "./lib/host.js",
+    "./client": "./lib/client.js",
     "./package.json": "./package.json"
   },
   "files": [
-    "bundle/host.js",
-    "bundle/client.js",
-    "bundle/probe-core.js",
-    "bundle/assets/nebula.jpg",
-    "bundle/assets/nebula-light.jpg",
-    "bundle/assets/nebula-web.mp4",
-    "bundle/assets/nebula-light.mp4",
+    "lib/host.js",
+    "lib/client.js",
+    "lib/probe-core.js",
     "cordis.patch.yml",
     "README.md",
-    "README.en.md",
-    "docs/screenshots/*.jpg"
+    "README.en.md"
   ],
+  "engines": {
+    "dsh": "^0.2.2-rc.5"
+  },
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     },
     "client": {
       "platform": "web",
-      "inject": [],
-      "immediately": true
+      "inject": []
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sayzwx/dsh-xingkong-theme.git"
+    "url": "git+https://github.com/sayzwx/dsh-custom-model.git"
   },
-  "homepage": "https://github.com/sayzwx/dsh-xingkong-theme#readme",
+  "homepage": "https://github.com/sayzwx/dsh-custom-model#readme",
   "keywords": [
     "dsh",
     "deepseek-harness",
     "dsh-plugin",
-    "theme",
-    "xingkong",
-    "nebula",
-    "dark-theme",
-    "light-theme",
-    "model-probe"
+    "custom-model",
+    "model-probe",
+    "llm-pi-ai",
+    "provider",
+    "model-settings"
   ]
 }

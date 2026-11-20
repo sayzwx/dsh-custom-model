@@ -1,6 +1,6 @@
-# dsh-xingkong-theme bundle patch: 把星空主题挂进 web profile。
-# host 半身 = 包 main（bundle/host.js），浏览器半身 = ./client 导出（bundle/client.js），
+# dsh-custom-model 的 bundle patch：把 host 半身挂进 profile。
+# host 半身 = 包 main（lib/host.js）；浏览器半身 = ./client 导出（lib/client.js），
 # 由 client 模块系统按 package.json 的 dsh.client 声明装载。
 - insert:
-    - id: xingkong-theme
-      name: dsh-xingkong-theme
+    - id: custom-model
+      name: dsh-custom-model
